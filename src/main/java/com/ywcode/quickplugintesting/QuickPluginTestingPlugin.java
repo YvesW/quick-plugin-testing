@@ -1,14 +1,32 @@
 package com.ywcode.quickplugintesting;
 
+import java.applet.*;
+import java.awt.Component.*;
+
+import net.runelite.api.Point;
+import net.runelite.client.ui.overlay.OverlayManager;
+
+
 import com.google.inject.Provides;
 import javax.inject.Inject;
+import javax.swing.*;
+
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.*;
 import net.runelite.api.events.*;
-import net.runelite.client.config.ConfigManager;
+import net.runelite.api.widgets.*;
+import net.runelite.client.*;
+import net.runelite.client.config.*;
 import net.runelite.client.eventbus.Subscribe;
+import net.runelite.client.events.*;
+import net.runelite.client.input.*;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
+import net.runelite.client.ui.*;
+import net.runelite.client.ui.overlay.*;
+import net.runelite.client.util.*;
+
+import java.awt.*;
 
 @Slf4j
 @PluginDescriptor(
@@ -63,6 +81,16 @@ public class QuickPluginTestingPlugin extends Plugin {
 
 	@Subscribe
 	public void onChatMessage(ChatMessage chatMessage) {
+		if (chatMessage.getType() == ChatMessageType.PUBLICCHAT && chatMessage.getName() == client.getLocalPlayer().getName()) {
+
+		}
+	}
+
+	@Subscribe
+	public void onConfigChanged(ConfigChanged configChanged) {
+		if (configChanged.getGroup().equals("qptesting")) {
+
+		}
 	}
 
 	@Subscribe
@@ -258,6 +286,10 @@ public class QuickPluginTestingPlugin extends Plugin {
 	}
 
 	@Subscribe
+	public void onProfileChanged(ProfileChanged profileChanged){
+	}
+
+	@Subscribe
 	public void onProjectileMoved(ProjectileMoved projectileMoved) {
 	}
 
@@ -334,8 +366,7 @@ public class QuickPluginTestingPlugin extends Plugin {
 	}
 
 	@Provides
-	QuickPluginTestingConfig provideConfig(ConfigManager configManager)
-	{
+	QuickPluginTestingConfig provideConfig(ConfigManager configManager)	{
 		return configManager.getConfig(QuickPluginTestingConfig.class);
 	}
 }
