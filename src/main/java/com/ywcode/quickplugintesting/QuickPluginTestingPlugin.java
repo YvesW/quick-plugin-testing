@@ -81,9 +81,8 @@ public class QuickPluginTestingPlugin extends Plugin {
 
 	@Subscribe
 	public void onChatMessage(ChatMessage chatMessage) {
-		if (chatMessage.getType() == ChatMessageType.PUBLICCHAT && chatMessage.getName() == client.getLocalPlayer().getName()) {
-
-		}
+		//if (chatMessage.getType() == ChatMessageType.PUBLICCHAT && chatMessage.getName() == client.getLocalPlayer().getName()) {
+		//}
 	}
 
 	@Subscribe
@@ -111,6 +110,11 @@ public class QuickPluginTestingPlugin extends Plugin {
 
 	@Subscribe
 	public void onCommandExecuted(CommandExecuted commandExecuted) {
+		if (commandExecuted.getCommand().equals("test")) {
+			//code here
+			//outputCommandArguments(commandExecuted);
+		}
+
 	}
 
 	@Subscribe
@@ -311,6 +315,7 @@ public class QuickPluginTestingPlugin extends Plugin {
 
 	@Subscribe
 	public void onScriptPreFired(ScriptPreFired scriptPreFired) {
+		//getScriptArguments(scriptPreFired, 1111);
 	}
 
 	@Subscribe
@@ -327,10 +332,12 @@ public class QuickPluginTestingPlugin extends Plugin {
 
 	@Subscribe
 	public void onVarbitChanged(VarbitChanged varbitChanged) {
+		//ifVarbitChanged(varbitChanged, 1111);
 	}
 
 	@Subscribe
 	public void onVarClientIntChanged(VarClientIntChanged varClientIntChanged) {
+		//ifVarClientIntChanged(varClientIntChanged, 1111);
 	}
 
 	@Subscribe
@@ -363,6 +370,48 @@ public class QuickPluginTestingPlugin extends Plugin {
 
 	@Subscribe
 	public void onWorldListLoad(WorldListLoad worldListLoad) {
+	}
+
+	public void getScriptArguments(ScriptPreFired scriptPreFired, int scriptIdToMatch) {
+		int scriptId = scriptPreFired.getScriptId();
+		if (scriptId == scriptIdToMatch) {
+			int intStackSize = client.getIntStackSize();
+			int[] intStack = client.getIntStack();
+			System.out.println(scriptId+" intStackSize = "+intStackSize);
+			for (int i = 0; i < intStackSize; i++) {
+				System.out.println(scriptId+" intStack["+i+"] = "+intStack[i]);
+			}
+			int stringStackSize = client.getStringStackSize();
+			String[] stringStack = client.getStringStack();
+			System.out.println(scriptId+" stringStackSize = "+stringStackSize);
+			for (int i = 0; i < stringStackSize; i++) {
+				System.out.println(scriptId+" stringStack["+i+"] = "+stringStack[i]);
+			}
+		}
+	}
+
+	public void ifVarbitChanged(VarbitChanged varbitChanged, int varbitIdToMatch) {
+		if (varbitChanged.getVarbitId() == varbitIdToMatch) {
+			System.out.println(System.currentTimeMillis() + " Varbit " + varbitChanged.getVarbitId() + "changed to " + varbitChanged.getValue());
+		}
+	}
+
+	public void ifVarClientIntChanged(VarClientIntChanged varClientIntChanged, int varclientIndexToMatch) {
+		if (varClientIntChanged.getIndex() == varclientIndexToMatch) {
+			System.out.println(System.currentTimeMillis() + " VarClientInt " + varClientIntChanged.getIndex() + " changed to " + client.getVarcIntValue(varClientIntChanged.getIndex()));
+		}
+	}
+
+	public void outputCommandArguments(CommandExecuted commandExecuted) {
+		String Arguments[] = commandExecuted.getArguments();
+		int VarArgsSize = Arguments.length;
+		for (int i = 0; i < VarArgsSize; i++) {
+			System.out.println(Arguments[i]);
+		}
+	}
+
+	public boolean isCommandName(CommandExecuted commandExecuted, String commandNameToMatch) { //meh, doesn't really save any time
+		return commandExecuted.getCommand().equals(commandNameToMatch);
 	}
 
 	@Provides
