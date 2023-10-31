@@ -43,6 +43,9 @@ public class QuickPluginTestingPlugin extends Plugin {
 	@Inject
 	private QuickPluginTestingConfig config;
 
+	@Inject
+	private ConfigManager configManager;
+
 	@Override
 	public void startUp() throws Exception {
 	}
@@ -114,7 +117,6 @@ public class QuickPluginTestingPlugin extends Plugin {
 			//code here
 			//outputCommandArguments(commandExecuted);
 		}
-
 	}
 
 	@Subscribe
@@ -332,7 +334,7 @@ public class QuickPluginTestingPlugin extends Plugin {
 
 	@Subscribe
 	public void onVarbitChanged(VarbitChanged varbitChanged) {
-		//ifVarbitChanged(varbitChanged, 1111);
+		//ifVarChanged(varbitChanged, 1111, true);
 	}
 
 	@Subscribe
@@ -390,9 +392,12 @@ public class QuickPluginTestingPlugin extends Plugin {
 		}
 	}
 
-	public void ifVarbitChanged(VarbitChanged varbitChanged, int varbitIdToMatch) {
-		if (varbitChanged.getVarbitId() == varbitIdToMatch) {
+	public void ifVarChanged(VarbitChanged varbitChanged, int varIdToMatch, boolean varbit) {
+		if (varbit && varbitChanged.getVarbitId() == varIdToMatch) {
 			System.out.println(System.currentTimeMillis() + " Varbit " + varbitChanged.getVarbitId() + "changed to " + varbitChanged.getValue());
+		}
+		if (!varbit && varbitChanged.getVarpId() == varIdToMatch) {
+			System.out.println(System.currentTimeMillis() + " Varp " + varbitChanged.getVarpId() + "changed to " + varbitChanged.getValue());
 		}
 	}
 
