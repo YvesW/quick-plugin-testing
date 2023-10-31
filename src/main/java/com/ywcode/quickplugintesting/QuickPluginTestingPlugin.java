@@ -450,13 +450,15 @@ public class QuickPluginTestingPlugin extends Plugin {
 		//Set contains to true to check if the Varc contains the value, not equals.
 		Map<Integer,Object> varcMap = client.getVarcMap();
 		for (Map.Entry<Integer, Object> entry : varcMap.entrySet()) {
+			String entryValue = Text.standardize(entry.getValue().toString());
+			String desiredValueStandardized = Text.standardize(desiredValue);
 			if (contains) {
-				if (entry.getValue().toString().contains(desiredValue)) {
+				if (entryValue.contains(desiredValueStandardized)) {
 					System.out.println("Varc " + entry.getKey() + " CONTAINS desired value: " + entry.getValue() + System.lineSeparator() + "client.getVarcIntValue = " + client.getVarcIntValue(entry.getKey()) + " client.getVarcStrValue = " + client.getVarcStrValue(entry.getKey()));
 				}
 			}
 			if (!contains) {
-				if (entry.getValue().toString().equals(desiredValue)) {
+				if (entryValue.equals(desiredValueStandardized)) {
 					System.out.println("Varc " + entry.getKey() + " MATCHES value: " + entry.getValue() + System.lineSeparator() + "client.getVarcIntValue = " + client.getVarcIntValue(entry.getKey()) + " client.getVarcStrValue = " + client.getVarcStrValue(entry.getKey()));
 				}
 			}
