@@ -118,7 +118,8 @@ public class QuickPluginTestingPlugin extends Plugin {
 			//code here
 			//outputCommandArguments(commandExecuted);
 			//findVarp(15);
-			//findVarc("::test");
+			//findVarc("::test", true);
+			//findVarc("5", false);
 			//findVarbit(7);
 		}
 	}
@@ -444,12 +445,20 @@ public class QuickPluginTestingPlugin extends Plugin {
 		System.out.println("findVarp completed looking for " + desiredValue);
 	}
 
-	private void findVarc(String desiredValue) {
+	private void findVarc(String desiredValue, boolean contains) {
 		//Iterate through Varc map looking for a Varc value. Displays both the VarcId (key) and the value.
+		//Set contains to true to check if the Varc contains the value, not equals.
 		Map<Integer,Object> varcMap = client.getVarcMap();
 		for (Map.Entry<Integer, Object> entry : varcMap.entrySet()) {
-			if (entry.getValue().toString().equals(desiredValue)) {
-				System.out.println("Varc " + entry.getKey() + " matches value: " + entry.getValue() + System.lineSeparator() + "client.getVarcIntValue = " + client.getVarcIntValue(entry.getKey()) + " client.getVarcStrValue = " + client.getVarcStrValue(entry.getKey()));
+			if (contains) {
+				if (entry.getValue().toString().contains(desiredValue)) {
+					System.out.println("Varc " + entry.getKey() + " CONTAINS desired value: " + entry.getValue() + System.lineSeparator() + "client.getVarcIntValue = " + client.getVarcIntValue(entry.getKey()) + " client.getVarcStrValue = " + client.getVarcStrValue(entry.getKey()));
+				}
+			}
+			if (!contains) {
+				if (entry.getValue().toString().equals(desiredValue)) {
+					System.out.println("Varc " + entry.getKey() + " MATCHES value: " + entry.getValue() + System.lineSeparator() + "client.getVarcIntValue = " + client.getVarcIntValue(entry.getKey()) + " client.getVarcStrValue = " + client.getVarcStrValue(entry.getKey()));
+				}
 			}
 		}
 		System.out.println("findVarc completed looking for " + desiredValue);
