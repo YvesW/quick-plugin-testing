@@ -27,6 +27,7 @@ import net.runelite.client.ui.overlay.*;
 import net.runelite.client.util.*;
 
 import java.awt.*;
+import java.util.*;
 
 @Slf4j
 @PluginDescriptor(
@@ -116,6 +117,9 @@ public class QuickPluginTestingPlugin extends Plugin {
 		if (commandExecuted.getCommand().equals("test")) {
 			//code here
 			//outputCommandArguments(commandExecuted);
+			//findVarp(15);
+			//findVarc("::test");
+			//findVarbit(7);
 		}
 	}
 
@@ -374,7 +378,8 @@ public class QuickPluginTestingPlugin extends Plugin {
 	public void onWorldListLoad(WorldListLoad worldListLoad) {
 	}
 
-	public void getScriptArguments(ScriptPreFired scriptPreFired, int scriptIdToMatch) {
+	private void getScriptArguments(ScriptPreFired scriptPreFired, int scriptIdToMatch) {
+		//Gets the arguments of a script when it fires. Should be used in onScriptPreFired
 		int scriptId = scriptPreFired.getScriptId();
 		if (scriptId == scriptIdToMatch) {
 			int intStackSize = client.getIntStackSize();
@@ -392,7 +397,8 @@ public class QuickPluginTestingPlugin extends Plugin {
 		}
 	}
 
-	public void ifVarChanged(VarbitChanged varbitChanged, int varIdToMatch, boolean varbit) {
+	private void ifVarChanged(VarbitChanged varbitChanged, int varIdToMatch, boolean varbit) {
+		//If the Varbit (true) or Varp (false) with this Id changes, it gets outputted. Useful to use in onVarbitChanged
 		if (varbit && varbitChanged.getVarbitId() == varIdToMatch) {
 			System.out.println(System.currentTimeMillis() + " Varbit " + varbitChanged.getVarbitId() + "changed to " + varbitChanged.getValue());
 		}
@@ -401,21 +407,65 @@ public class QuickPluginTestingPlugin extends Plugin {
 		}
 	}
 
-	public void ifVarClientIntChanged(VarClientIntChanged varClientIntChanged, int varclientIndexToMatch) {
+	private void ifVarClientIntChanged(VarClientIntChanged varClientIntChanged, int varclientIndexToMatch) {
+		//If the VarClientInt with this Index/Id changes, it gets outputted. Useful to use in onVarclientIntChanged
 		if (varClientIntChanged.getIndex() == varclientIndexToMatch) {
 			System.out.println(System.currentTimeMillis() + " VarClientInt " + varClientIntChanged.getIndex() + " changed to " + client.getVarcIntValue(varClientIntChanged.getIndex()));
 		}
 	}
 
-	public void outputCommandArguments(CommandExecuted commandExecuted) {
-		String Arguments[] = commandExecuted.getArguments();
+	private void findVarbit(int desiredValue) {
+		//Iterate through Varbits to find matching varbits based on value. Outputs the VarbitId and VarbitValue
+		try {
+			//This is such a hacky solution find the max varbit size... There must be a better way, but I can't find it right now in the API...
+			for (int i = 0; i < 1000000; i++) {
+				client.getVarbitValue(i);
+			}
+		} catch (IndexOutOfBoundsException indexOutOfBoundsException) {
+			int lastAvailableVarbit = Integer.parseInt(indexOutOfBoundsException.getMessage().replace("Varbit ", "").replace(" does not exist", "")) - 1;
+			System.out.println("Last available varbitId = " + lastAvailableVarbit);
+			for (int i = 0; i <= lastAvailableVarbit; i++) {
+				if (client.getVarbitValue(i) == desiredValue) {
+					System.out.println("Varbit " + i + " matches value: " + client.getVarbitValue(i));
+				}
+			}
+		}
+		System.out.println("findVarbit completed looking for " + desiredValue);
+	}
+
+	private void findVarp(int desiredValue) {
+		//Iterate through Varps to find matching Varps based on value. Outputs the VarpId and VarpValue
+		int[] varps = client.getVarps();
+		for (int i = 0; i < varps.length; i++) {
+			if (varps[i] == desiredValue) {
+				System.out.println("Varp " + i + " matches value: " + varps[i] + System.lineSeparator() +"client.getVarpValue = " + client.getVarpValue(i));
+			}
+		}
+		System.out.println("findVarp completed looking for " + desiredValue);
+	}
+
+	private void findVarc(String desiredValue) {
+		//Iterate through Varc map looking for a Varc value. Displays both the VarcId (key) and the value.
+		Map<Integer,Object> varcMap = client.getVarcMap();
+		for (Map.Entry<Integer, Object> entry : varcMap.entrySet()) {
+			if (entry.getValue().toString().equals(desiredValue)) {
+				System.out.println("Varc " + entry.getKey() + " matches value: " + entry.getValue() + System.lineSeparator() + "client.getVarcIntValue = " + client.getVarcIntValue(entry.getKey()) + " client.getVarcStrValue = " + client.getVarcStrValue(entry.getKey()));
+			}
+		}
+		System.out.println("findVarc completed looking for " + desiredValue);
+	}
+
+	private void outputCommandArguments(CommandExecuted commandExecuted) {
+		//Iterates over all the command arguments (e.g. ::test 5 6 7) and printlns them
+		//I've completely forgotten the use case for this though. Maybe an example of how to use the arguments?
+		String[] Arguments = commandExecuted.getArguments();
 		int VarArgsSize = Arguments.length;
-		for (int i = 0; i < VarArgsSize; i++) {
+		for (int i = 0; i < VarArgsSize; i++) { //Can be replaced with enhanced for.
 			System.out.println(Arguments[i]);
 		}
 	}
 
-	public boolean isCommandName(CommandExecuted commandExecuted, String commandNameToMatch) { //meh, doesn't really save any time
+	private boolean isCommandName(CommandExecuted commandExecuted, String commandNameToMatch) { //meh, doesn't really save any time
 		return commandExecuted.getCommand().equals(commandNameToMatch);
 	}
 
