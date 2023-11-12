@@ -4,6 +4,7 @@ import java.applet.*;
 import java.awt.Component.*;
 
 import net.runelite.api.Point;
+import net.runelite.api.clan.*;
 import net.runelite.client.ui.overlay.OverlayManager;
 
 
@@ -118,7 +119,7 @@ public class QuickPluginTestingPlugin extends Plugin {
 			//code here
 			//outputCommandArguments(commandExecuted);
 			//findVarp(15);
-			//findVarc("::test", true);
+			//findVarc("hello world", true);
 			//findVarc("5", false);
 			//findVarbit(7);
 		}
@@ -322,7 +323,8 @@ public class QuickPluginTestingPlugin extends Plugin {
 
 	@Subscribe
 	public void onScriptPreFired(ScriptPreFired scriptPreFired) {
-		//getScriptArguments(scriptPreFired, 1111);
+		//getScriptArguments(scriptPreFired, 178);
+		//getScriptArguments(scriptPreFired, ScriptID.CHAT_PROMPT_INIT);
 	}
 
 	@Subscribe
@@ -339,7 +341,8 @@ public class QuickPluginTestingPlugin extends Plugin {
 
 	@Subscribe
 	public void onVarbitChanged(VarbitChanged varbitChanged) {
-		//ifVarChanged(varbitChanged, 1111, true);
+		//ifVarChanged(varbitChanged, 928, true);
+		//ifVarChanged(varbitChanged, 929, true);
 	}
 
 	@Subscribe
@@ -349,6 +352,7 @@ public class QuickPluginTestingPlugin extends Plugin {
 
 	@Subscribe
 	public void onVarClientStrChanged(VarClientStrChanged varClientStrChanged) {
+		//onVarcValueChangedTo(varClientStrChanged,"namehere", true);
 	}
 
 	@Subscribe
@@ -464,6 +468,18 @@ public class QuickPluginTestingPlugin extends Plugin {
 			}
 		}
 		System.out.println("findVarc completed looking for " + desiredValue);
+	}
+
+	private void onVarcValueChangedTo(VarClientStrChanged varClientStrChanged, String value, boolean contains) {
+		//Use this in onVarClientStrChanged to only output VarCStrs with this specific value
+		int index = varClientStrChanged.getIndex();
+		String stringValue = client.getVarcStrValue(index);
+		if (contains && stringValue.contains(value)) {
+			System.out.println("VarcStr " + index + " CONTAINS desired value: " + stringValue);
+		}
+		if (!contains && stringValue.equals(value)) {
+			System.out.println("VarcStr " + index + " MATCHES desired value: " + stringValue);
+		}
 	}
 
 	private void outputCommandArguments(CommandExecuted commandExecuted) {
