@@ -353,6 +353,7 @@ public class QuickPluginTestingPlugin extends Plugin {
 	@Subscribe
 	public void onVarClientStrChanged(VarClientStrChanged varClientStrChanged) {
 		//onVarcValueChangedTo(varClientStrChanged,"hello world", true);
+		//ifVarClientStrChanged(varClientStrChanged, 330);
 	}
 
 	@Subscribe
@@ -416,6 +417,13 @@ public class QuickPluginTestingPlugin extends Plugin {
 		//If the VarClientInt with this Index/Id changes, it gets outputted. Useful to use in onVarclientIntChanged
 		if (varClientIntChanged.getIndex() == varclientIndexToMatch) {
 			System.out.println(System.currentTimeMillis() + " VarClientInt " + varClientIntChanged.getIndex() + " changed to " + client.getVarcIntValue(varClientIntChanged.getIndex()));
+		}
+	}
+
+	private void ifVarClientStrChanged(VarClientStrChanged varClientStrChanged, int varclientIndexToMatch) {
+		//If the VarClientStr with this Index/Id changes, it gets outputted. Useful to use in onVarclientStrChanged
+		if (varClientStrChanged.getIndex() == varclientIndexToMatch) {
+			System.out.println(System.currentTimeMillis() + " VarClientStr " + varClientStrChanged.getIndex() + " changed to " + client.getVarcStrValue(varClientStrChanged.getIndex()));
 		}
 	}
 
