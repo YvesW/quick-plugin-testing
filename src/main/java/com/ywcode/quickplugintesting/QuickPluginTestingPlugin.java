@@ -406,10 +406,10 @@ public class QuickPluginTestingPlugin extends Plugin {
 	private void ifVarChanged(VarbitChanged varbitChanged, int varIdToMatch, boolean varbit) {
 		//If the Varbit (true) or Varp (false) with this Id changes, it gets outputted. Useful to use in onVarbitChanged
 		if (varbit && varbitChanged.getVarbitId() == varIdToMatch) {
-			System.out.println(System.currentTimeMillis() + " Varbit " + varbitChanged.getVarbitId() + "changed to " + varbitChanged.getValue());
+			System.out.println(System.currentTimeMillis() + " Varbit " + varbitChanged.getVarbitId() + " changed to " + varbitChanged.getValue());
 		}
 		if (!varbit && varbitChanged.getVarpId() == varIdToMatch) {
-			System.out.println(System.currentTimeMillis() + " Varp " + varbitChanged.getVarpId() + "changed to " + varbitChanged.getValue());
+			System.out.println(System.currentTimeMillis() + " Varp " + varbitChanged.getVarpId() + " changed to " + varbitChanged.getValue());
 		}
 	}
 
