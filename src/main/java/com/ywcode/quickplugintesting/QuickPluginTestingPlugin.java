@@ -352,7 +352,7 @@ public class QuickPluginTestingPlugin extends Plugin {
 
 	@Subscribe
 	public void onVarClientStrChanged(VarClientStrChanged varClientStrChanged) {
-		//onVarcValueChangedTo(varClientStrChanged,"namehere", true);
+		//onVarcValueChangedTo(varClientStrChanged,"hello world", true);
 	}
 
 	@Subscribe
@@ -470,14 +470,15 @@ public class QuickPluginTestingPlugin extends Plugin {
 		System.out.println("findVarc completed looking for " + desiredValue);
 	}
 
-	private void onVarcValueChangedTo(VarClientStrChanged varClientStrChanged, String value, boolean contains) {
+	private void onVarcValueChangedTo(VarClientStrChanged varClientStrChanged, String desiredValue, boolean contains) {
 		//Use this in onVarClientStrChanged to only output VarCStrs with this specific value
 		int index = varClientStrChanged.getIndex();
-		String stringValue = client.getVarcStrValue(index);
-		if (contains && stringValue.contains(value)) {
+		String stringValue = Text.standardize(client.getVarcStrValue(index));
+		desiredValue = Text.standardize(desiredValue);
+		if (contains && stringValue.contains(desiredValue)) {
 			System.out.println("VarcStr " + index + " CONTAINS desired value: " + stringValue);
 		}
-		if (!contains && stringValue.equals(value)) {
+		if (!contains && stringValue.equals(desiredValue)) {
 			System.out.println("VarcStr " + index + " MATCHES desired value: " + stringValue);
 		}
 	}
