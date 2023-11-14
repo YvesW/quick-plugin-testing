@@ -39,6 +39,8 @@ import java.util.*;
 
 public class QuickPluginTestingPlugin extends Plugin {
 
+	private static final Map<Integer, Integer> scriptMap = new HashMap<>();
+
 	@Inject
 	private Client client;
 
@@ -325,6 +327,7 @@ public class QuickPluginTestingPlugin extends Plugin {
 	public void onScriptPreFired(ScriptPreFired scriptPreFired) {
 		//getScriptArguments(scriptPreFired, 178);
 		//getScriptArguments(scriptPreFired, ScriptID.CHAT_PROMPT_INIT);
+		//outputScriptIds(scriptPreFired, 35);
 	}
 
 	@Subscribe
@@ -401,6 +404,18 @@ public class QuickPluginTestingPlugin extends Plugin {
 				System.out.println(scriptId+" stringStack["+i+"] = "+stringStack[i]);
 			}
 		}
+	}
+
+	private void outputScriptIds(ScriptPreFired scriptPreFired, int gameCycles) {
+		//Useful for finding scriptIds without being spammed by scripts that run every gametick. Should be used in onScriptPreFired
+		int id = scriptPreFired.getScriptId();
+		if(scriptMap.containsKey(id)) {
+			int cyclesPassed = client.getGameCycle() - scriptMap.get(id);
+			if (cyclesPassed > gameCycles) {
+				System.out.println("Cycles passed: "+cyclesPassed + " scriptId: " + id);
+			}
+		}
+		scriptMap.put(id, client.getGameCycle()); //Put it in there if it's not in the HashMap or update the value
 	}
 
 	private void ifVarChanged(VarbitChanged varbitChanged, int varIdToMatch, boolean varbit) {
