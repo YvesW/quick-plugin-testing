@@ -1,33 +1,20 @@
 package com.ywcode.quickplugintesting;
 
-import java.applet.*;
-import java.awt.Component.*;
-
-import net.runelite.api.Point;
-import net.runelite.api.clan.*;
-import net.runelite.client.ui.overlay.OverlayManager;
-
 
 import com.google.inject.Provides;
 import javax.inject.Inject;
-import javax.swing.*;
 
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.*;
 import net.runelite.api.events.*;
 import net.runelite.api.widgets.*;
-import net.runelite.client.*;
 import net.runelite.client.config.*;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.*;
-import net.runelite.client.input.*;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.ui.*;
-import net.runelite.client.ui.overlay.*;
 import net.runelite.client.util.*;
 
-import java.awt.*;
 import java.util.*;
 
 @Slf4j
@@ -325,8 +312,10 @@ public class QuickPluginTestingPlugin extends Plugin {
 
 	@Subscribe
 	public void onScriptPreFired(ScriptPreFired scriptPreFired) {
-		//getScriptArguments(scriptPreFired, 178);
-		//getScriptArguments(scriptPreFired, ScriptID.CHAT_PROMPT_INIT);
+		//getScriptStack(scriptPreFired, 178);
+		//getScriptStack(scriptPreFired, ScriptID.CHAT_PROMPT_INIT);
+		//getScriptArguments(scriptPreFired, 178, true);
+		//getScriptArguments(scriptPreFired, ScriptID.CHAT_PROMPT_INIT, true);
 		//outputScriptIds(scriptPreFired, 35);
 	}
 
@@ -387,8 +376,8 @@ public class QuickPluginTestingPlugin extends Plugin {
 	public void onWorldListLoad(WorldListLoad worldListLoad) {
 	}
 
-	private void getScriptArguments(ScriptPreFired scriptPreFired, int scriptIdToMatch) {
-		//Gets the arguments of a script when it fires. Should be used in onScriptPreFired
+	private void getScriptStack(ScriptPreFired scriptPreFired, int scriptIdToMatch) {
+		//Gets the scriptstack and its content when it fires. Should be used in onScriptPreFired
 		int scriptId = scriptPreFired.getScriptId();
 		if (scriptId == scriptIdToMatch) {
 			int intStackSize = client.getIntStackSize();
@@ -402,6 +391,39 @@ public class QuickPluginTestingPlugin extends Plugin {
 			System.out.println(scriptId+" stringStackSize = "+stringStackSize);
 			for (int i = 0; i < stringStackSize; i++) {
 				System.out.println(scriptId+" stringStack["+i+"] = "+stringStack[i]);
+			}
+		}
+	}
+
+	private void getScriptArguments(ScriptPreFired scriptPreFired, int scriptIdToMatch, boolean printExtraStuff) {
+		//Gets i.a. the script arguments. Should be used in onScriptPreFired. boolean printExtraStuff in case you also want to print Op stuff and typedKeyChar/Code
+		int scriptId = scriptPreFired.getScriptId();
+		if (scriptId == scriptIdToMatch) {
+			if (scriptPreFired.getScriptEvent() != null) {
+
+				ScriptEvent scriptEvent = scriptPreFired.getScriptEvent();
+				Widget scriptSource = scriptEvent.getSource();
+				int scriptSourceId = scriptSource.getId();
+				Object[] scriptArguments = scriptEvent.getArguments();
+
+				System.out.println(scriptId + " source = " + scriptEvent.getSource());
+				System.out.println(scriptId + " WidgetUtil.componentToInterface(scriptSourceId) = " + WidgetUtil.componentToInterface(scriptSourceId));
+				System.out.println(scriptId + " WidgetUtil.componentToId(scriptSourceId) = " + WidgetUtil.componentToId(scriptSourceId));
+				System.out.println(scriptId + " scriptSource.getIndex() = " + scriptSource.getIndex());
+				System.out.println("Arg length = " + scriptArguments.length);
+				for (Object scriptArgument : scriptArguments) {
+					System.out.println(scriptArgument);
+				}
+				System.out.println("Done printing script arguments.");
+				if (printExtraStuff) {
+					System.out.println(scriptId + " scriptEvent.getOp() = " + scriptEvent.getOp());
+					System.out.println(scriptId + " scriptEvent.getOpbase() = " + scriptEvent.getOpbase());
+					System.out.println(scriptId + " scriptEvent.getTypedKeyChar() = " + scriptEvent.getTypedKeyChar());
+					System.out.println(scriptId + " scriptEvent.getTypedKeyCode() = " + scriptEvent.getTypedKeyCode());
+				}
+
+			} else {
+				System.out.println(scriptId + " scriptEvent = null");
 			}
 		}
 	}
