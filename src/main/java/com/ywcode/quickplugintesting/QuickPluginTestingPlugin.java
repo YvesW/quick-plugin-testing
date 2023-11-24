@@ -399,6 +399,7 @@ public class QuickPluginTestingPlugin extends Plugin {
 
 	private void getScriptArguments(ScriptPreFired scriptPreFired, int scriptIdToMatch, boolean printExtraStuff) {
 		//Gets i.a. the script arguments. Should be used in onScriptPreFired. boolean printExtraStuff in case you also want to print Op stuff and typedKeyChar/Code
+		//If you want to get the scripts that are fired because of this script, check RuneLite's script inspector!
 		int scriptId = scriptPreFired.getScriptId();
 		if (scriptId == scriptIdToMatch) {
 			if (scriptPreFired.getScriptEvent() != null) {
