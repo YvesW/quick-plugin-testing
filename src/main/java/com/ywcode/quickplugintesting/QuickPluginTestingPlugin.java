@@ -15,6 +15,7 @@ import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.util.*;
 
+import java.lang.reflect.*;
 import java.util.*;
 
 @Slf4j
@@ -27,6 +28,7 @@ import java.util.*;
 public class QuickPluginTestingPlugin extends Plugin {
 
 	private static final Map<Integer, Integer> scriptMap = new HashMap<>();
+	private static final Map<Integer, String> widgetNames = new HashMap<>();
 
 	@Inject
 	private Client client;
@@ -312,10 +314,10 @@ public class QuickPluginTestingPlugin extends Plugin {
 
 	@Subscribe
 	public void onScriptPreFired(ScriptPreFired scriptPreFired) {
-		//getScriptStack(scriptPreFired, 178);
-		//getScriptStack(scriptPreFired, ScriptID.CHAT_PROMPT_INIT);
-		//getScriptArguments(scriptPreFired, 178, true);
-		//getScriptArguments(scriptPreFired, ScriptID.CHAT_PROMPT_INIT, true);
+		//getScriptStack(scriptPreFired, 57);
+		//getScriptStack(scriptPreFired, 2153);
+		//getScriptArguments(scriptPreFired, 57, true);
+		//getScriptArguments(scriptPreFired, 2153, true);
 		//outputScriptIds(scriptPreFired, 35);
 	}
 
@@ -415,6 +417,10 @@ public class QuickPluginTestingPlugin extends Plugin {
 					System.out.println(scriptArgument);
 				}
 				System.out.println("Done printing script arguments.");
+				var name = getWidgetName(scriptSourceId);
+				if (name != null) {
+					System.out.println("WidgetName = "+ name);
+				}
 				if (printExtraStuff) {
 					System.out.println(scriptId + " scriptEvent.getOp() = " + scriptEvent.getOp());
 					System.out.println(scriptId + " scriptEvent.getOpbase() = " + scriptEvent.getOpbase());
@@ -540,6 +546,22 @@ public class QuickPluginTestingPlugin extends Plugin {
 
 	private boolean isCommandName(CommandExecuted commandExecuted, String commandNameToMatch) { //meh, doesn't really save any time
 		return commandExecuted.getCommand().equals(commandNameToMatch);
+	}
+
+	private static String getWidgetName(int componentId) {
+		//Yoinked from the widgetinspector, gets used in the scriptinspector
+		if (widgetNames.isEmpty()) {
+			//Initialize map here, so it doesn't create the index
+			//until it's actually needed.
+			try {
+				for (Field f : ComponentID.class.getDeclaredFields()) {
+					widgetNames.put(f.getInt(null), f.getName());
+				}
+			} catch (IllegalAccessException ex) {
+				System.out.println("error setting up widget names: " + ex);
+			}
+		}
+		return widgetNames.get(componentId);
 	}
 
 	@Provides
