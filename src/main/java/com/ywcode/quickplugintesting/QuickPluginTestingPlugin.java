@@ -11,8 +11,11 @@ import net.runelite.api.widgets.*;
 import net.runelite.client.config.*;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.*;
+import net.runelite.client.party.events.*;
+import net.runelite.client.party.messages.*;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
+import net.runelite.client.plugins.party.messages.*;
 import net.runelite.client.util.*;
 
 import java.lang.reflect.*;
@@ -213,6 +216,10 @@ public class QuickPluginTestingPlugin extends Plugin {
 	}
 
 	@Subscribe
+	public void onLocationUpdate(LocationUpdate locationUpdate) {
+	}
+
+	@Subscribe
 	public void onMenuEntryAdded(MenuEntryAdded menuEntryAdded) {
 	}
 
@@ -246,6 +253,18 @@ public class QuickPluginTestingPlugin extends Plugin {
 
 	@Subscribe
 	public void onOverheadTextChanged(OverheadTextChanged overheadTextChanged) {
+	}
+
+	@Subscribe
+	public void onPartyChanged(PartyChanged partyChanged) {
+	}
+
+	@Subscribe
+	public void onPartyChatMessage(PartyChatMessage partyChatMessage) {
+	}
+
+	@Subscribe
+	public void onPartyMemberAvatar(PartyMemberAvatar partyMemberAvatar) {
 	}
 
 	@Subscribe
@@ -330,7 +349,27 @@ public class QuickPluginTestingPlugin extends Plugin {
 	}
 
 	@Subscribe
+	public void onStatusUpdate(StatusUpdate statusUpdate) {
+	}
+
+	@Subscribe
+	public void onUserJoin(UserJoin userJoin) {
+	}
+
+	@Subscribe
+	public void onUserSync(UserSync userSync) {
+	}
+
+	@Subscribe
+	public void onTilePing(TilePing tilePing) {
+	}
+
+	@Subscribe
 	public void onUsernameChanged(UsernameChanged usernameChanged) {
+	}
+
+	@Subscribe
+	public void onUserPart(UserPart userPart) {
 	}
 
 	@Subscribe
