@@ -378,6 +378,7 @@ public class QuickPluginTestingPlugin extends Plugin {
 	public void onWorldListLoad(WorldListLoad worldListLoad) {
 	}
 
+	@SuppressWarnings("SameParameterValue")
 	private void getScriptStack(ScriptPreFired scriptPreFired, int scriptIdToMatch) {
 		//Gets the scriptstack and its content when it fires. Should be used in onScriptPreFired
 		int scriptId = scriptPreFired.getScriptId();
@@ -397,6 +398,7 @@ public class QuickPluginTestingPlugin extends Plugin {
 		}
 	}
 
+	@SuppressWarnings("SameParameterValue")
 	private void getScriptArguments(ScriptPreFired scriptPreFired, int scriptIdToMatch, boolean printExtraStuff) {
 		//Gets i.a. the script arguments. Should be used in onScriptPreFired. boolean printExtraStuff in case you also want to print Op stuff and typedKeyChar/Code
 		//If you want to get the scripts that are fired because of this script, check RuneLite's script inspector!
@@ -435,6 +437,7 @@ public class QuickPluginTestingPlugin extends Plugin {
 		}
 	}
 
+	@SuppressWarnings("SameParameterValue")
 	private void outputScriptIds(ScriptPreFired scriptPreFired, int gameCycles) {
 		//Useful for finding scriptIds without being spammed by scripts that run every gametick. Should be used in onScriptPreFired
 		int id = scriptPreFired.getScriptId();
@@ -447,6 +450,7 @@ public class QuickPluginTestingPlugin extends Plugin {
 		scriptMap.put(id, client.getGameCycle()); //Put it in there if it's not in the HashMap or update the value
 	}
 
+	@SuppressWarnings("SameParameterValue")
 	private void ifVarChanged(VarbitChanged varbitChanged, int varIdToMatch, boolean varbit) {
 		//If the Varbit (true) or Varp (false) with this Id changes, it gets outputted. Useful to use in onVarbitChanged
 		if (varbit && varbitChanged.getVarbitId() == varIdToMatch) {
@@ -457,6 +461,7 @@ public class QuickPluginTestingPlugin extends Plugin {
 		}
 	}
 
+	@SuppressWarnings("SameParameterValue")
 	private void ifVarClientIntChanged(VarClientIntChanged varClientIntChanged, int varclientIndexToMatch) {
 		//If the VarClientInt with this Index/Id changes, it gets outputted. Useful to use in onVarclientIntChanged
 		if (varClientIntChanged.getIndex() == varclientIndexToMatch) {
@@ -464,6 +469,7 @@ public class QuickPluginTestingPlugin extends Plugin {
 		}
 	}
 
+	@SuppressWarnings("SameParameterValue")
 	private void ifVarClientStrChanged(VarClientStrChanged varClientStrChanged, int varclientIndexToMatch) {
 		//If the VarClientStr with this Index/Id changes, it gets outputted. Useful to use in onVarclientStrChanged
 		if (varClientStrChanged.getIndex() == varclientIndexToMatch) {
@@ -471,6 +477,7 @@ public class QuickPluginTestingPlugin extends Plugin {
 		}
 	}
 
+	@SuppressWarnings("SameParameterValue")
 	private void findVarbit(int desiredValue) {
 		//Iterate through Varbits to find matching varbits based on value. Outputs the VarbitId and VarbitValue
 		try {
@@ -490,6 +497,7 @@ public class QuickPluginTestingPlugin extends Plugin {
 		System.out.println("findVarbit completed looking for " + desiredValue);
 	}
 
+	@SuppressWarnings("SameParameterValue")
 	private void findVarp(int desiredValue) {
 		//Iterate through Varps to find matching Varps based on value. Outputs the VarpId and VarpValue
 		int[] varps = client.getVarps();
@@ -501,6 +509,7 @@ public class QuickPluginTestingPlugin extends Plugin {
 		System.out.println("findVarp completed looking for " + desiredValue);
 	}
 
+	@SuppressWarnings("SameParameterValue")
 	private void findVarc(String desiredValue, boolean contains) {
 		//Iterate through Varc map looking for a Varc value. Displays both the VarcId (key) and the value.
 		//Set contains to true to check if the Varc contains the value, not equals.
@@ -522,6 +531,7 @@ public class QuickPluginTestingPlugin extends Plugin {
 		System.out.println("findVarc completed looking for " + desiredValue);
 	}
 
+	@SuppressWarnings("SameParameterValue")
 	private void onVarcValueChangedTo(VarClientStrChanged varClientStrChanged, String desiredValue, boolean contains) {
 		//Use this in onVarClientStrChanged to only output VarCStrs with this specific value
 		int index = varClientStrChanged.getIndex();
@@ -535,6 +545,7 @@ public class QuickPluginTestingPlugin extends Plugin {
 		}
 	}
 
+	@SuppressWarnings("SameParameterValue")
 	private void outputCommandArguments(CommandExecuted commandExecuted) {
 		//Iterates over all the command arguments (e.g. ::test 5 6 7) and printlns them
 		//I've completely forgotten the use case for this though. Maybe an example of how to use the arguments?
