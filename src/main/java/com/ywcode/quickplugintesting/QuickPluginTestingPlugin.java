@@ -8,9 +8,11 @@ import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.*;
 import net.runelite.api.events.*;
 import net.runelite.api.widgets.*;
+import net.runelite.client.callback.*;
 import net.runelite.client.config.*;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.*;
+import net.runelite.client.party.*;
 import net.runelite.client.party.events.*;
 import net.runelite.client.party.messages.*;
 import net.runelite.client.plugins.Plugin;
@@ -18,6 +20,8 @@ import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.plugins.dpscounter.*;
 import net.runelite.client.plugins.party.messages.*;
 import net.runelite.client.plugins.specialcounter.*;
+import net.runelite.client.ui.overlay.*;
+import net.runelite.client.ui.overlay.infobox.*;
 import net.runelite.client.util.*;
 
 import java.lang.reflect.*;
@@ -43,6 +47,18 @@ public class QuickPluginTestingPlugin extends Plugin {
 
 	@Inject
 	private ConfigManager configManager;
+
+	@Inject
+	private ClientThread clientThread;
+
+	@Inject
+	private PartyService partyService;
+
+	@Inject
+	private InfoBoxManager infoBoxManager;
+
+	@Inject
+	private OverlayManager overlayManager;
 
 	@Override
 	public void startUp() throws Exception {
