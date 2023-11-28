@@ -15,7 +15,9 @@ import net.runelite.client.party.events.*;
 import net.runelite.client.party.messages.*;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
+import net.runelite.client.plugins.dpscounter.*;
 import net.runelite.client.plugins.party.messages.*;
+import net.runelite.client.plugins.specialcounter.*;
 import net.runelite.client.util.*;
 
 import java.lang.reflect.*;
@@ -79,16 +81,21 @@ public class QuickPluginTestingPlugin extends Plugin {
 	}
 
 	@Subscribe
+	public void onChatboxInput(ChatboxInput chatboxInput) {
+	}
+
+	@Subscribe
 	public void onChatMessage(ChatMessage chatMessage) {
 		//if (chatMessage.getType() == ChatMessageType.PUBLICCHAT && chatMessage.getName() == client.getLocalPlayer().getName()) {
 		//}
 	}
 
 	@Subscribe
-	public void onConfigChanged(ConfigChanged configChanged) {
-		if (configChanged.getGroup().equals("qptesting")) {
+	public void onChatInput(ChatInput chatInput) {
+	}
 
-		}
+	@Subscribe
+	public void onClientShutdown(ClientShutdown clientShutdown) {
 	}
 
 	@Subscribe
@@ -120,6 +127,17 @@ public class QuickPluginTestingPlugin extends Plugin {
 	}
 
 	@Subscribe
+	public void onConfigChanged(ConfigChanged configChanged) {
+		if (configChanged.getGroup().equals("qptesting")) {
+
+		}
+	}
+
+	@Subscribe
+	public void onConfigSync(ConfigSync configSync) {
+	}
+
+	@Subscribe
 	public void onDecorativeObjectDespawned(DecorativeObjectDespawned decorativeObjectDespawned) {
 	}
 
@@ -128,7 +146,15 @@ public class QuickPluginTestingPlugin extends Plugin {
 	}
 
 	@Subscribe
+	public void onDpsUpdate(DpsUpdate dpsUpdate) {
+	}
+
+	@Subscribe
 	public void onDraggingWidgetChanged(DraggingWidgetChanged draggingWidgetChanged) {
+	}
+
+	@Subscribe
+	public void onExternalPluginsChanged(ExternalPluginsChanged externalPluginsChanged) {
 	}
 
 	@Subscribe
@@ -196,6 +222,10 @@ public class QuickPluginTestingPlugin extends Plugin {
 	}
 
 	@Subscribe
+	public void onInfoBoxMenuClicked(InfoBoxMenuClicked infoBoxMenuClicked) {
+	}
+
+	@Subscribe
 	public void onInteractingChanged(InteractingChanged interactingChanged) {
 	}
 
@@ -240,6 +270,18 @@ public class QuickPluginTestingPlugin extends Plugin {
 	}
 
 	@Subscribe
+	public void onNavigationButtonAdded(NavigationButtonAdded navigationButtonAdded) {
+	}
+
+	@Subscribe
+	public void onNavigationButtonRemoved(NavigationButtonRemoved navigationButtonRemoved) {
+	}
+
+	@Subscribe
+	public void onNotificationFired(NotificationFired notificationFired) {
+	}
+
+	@Subscribe
 	public void onNpcChanged(NpcChanged npcChanged) {
 	}
 
@@ -248,11 +290,19 @@ public class QuickPluginTestingPlugin extends Plugin {
 	}
 
 	@Subscribe
+	public void	onNpcLootReceived(NpcLootReceived npcLootReceived) {
+	}
+
+	@Subscribe
 	public void onNpcSpawned(NpcSpawned npcSpawned) {
 	}
 
 	@Subscribe
 	public void onOverheadTextChanged(OverheadTextChanged overheadTextChanged) {
+	}
+
+	@Subscribe
+	public void onOverlayMenuClicked(OverlayMenuClicked overlayMenuClicked) {
 	}
 
 	@Subscribe
@@ -280,7 +330,15 @@ public class QuickPluginTestingPlugin extends Plugin {
 	}
 
 	@Subscribe
+	public void onPlayerLootReceived(PlayerLootReceived	playerLootReceived) {
+	}
+
+	@Subscribe
 	public void onPlayerSpawned(PlayerSpawned playerSpawned) {
+	}
+
+	@Subscribe
+	public void onPluginChanged(PluginChanged pluginChanged) {
 	}
 
 	@Subscribe
@@ -308,6 +366,10 @@ public class QuickPluginTestingPlugin extends Plugin {
 	}
 
 	@Subscribe
+	public void onPrivateMessageInput(PrivateMessageInput privateMessageInput) {
+	}
+
+	@Subscribe
 	public void onProfileChanged(ProfileChanged profileChanged){
 	}
 
@@ -321,6 +383,14 @@ public class QuickPluginTestingPlugin extends Plugin {
 
 	@Subscribe
 	public void onResizeableChanged(ResizeableChanged resizeableChanged) {
+	}
+
+	@Subscribe
+	public void onRuneScapeProfileChanged(RuneScapeProfileChanged runeScapeProfileChanged) {
+	}
+
+	@Subscribe
+	public void onScreenshotTaken(ScreenshotTaken screenshotTaken) {
 	}
 
 	@Subscribe
@@ -341,7 +411,19 @@ public class QuickPluginTestingPlugin extends Plugin {
 	}
 
 	@Subscribe
+	public void onSessionClose(SessionClose sessionClose) {
+	}
+
+	@Subscribe
+	public void onSessionOpen(SessionOpen sessionOpen) {
+	}
+
+	@Subscribe
 	public void onSoundEffectPlayed(SoundEffectPlayed soundEffectPlayed) {
+	}
+
+	@Subscribe
+	public void onSpecialCounterUpdate(SpecialCounterUpdate specialCounterUpdate) {
 	}
 
 	@Subscribe
@@ -411,6 +493,10 @@ public class QuickPluginTestingPlugin extends Plugin {
 
 	@Subscribe
 	public void onWorldChanged(WorldChanged worldChanged) {
+	}
+
+	@Subscribe
+	public void onWorldsFetch(WorldsFetch worldsFetch) {
 	}
 
 	@Subscribe
