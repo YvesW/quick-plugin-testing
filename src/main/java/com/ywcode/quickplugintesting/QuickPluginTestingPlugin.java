@@ -286,14 +286,6 @@ public class QuickPluginTestingPlugin extends Plugin {
 	}
 
 	@Subscribe
-	public void onNavigationButtonAdded(NavigationButtonAdded navigationButtonAdded) {
-	}
-
-	@Subscribe
-	public void onNavigationButtonRemoved(NavigationButtonRemoved navigationButtonRemoved) {
-	}
-
-	@Subscribe
 	public void onNotificationFired(NotificationFired notificationFired) {
 	}
 
