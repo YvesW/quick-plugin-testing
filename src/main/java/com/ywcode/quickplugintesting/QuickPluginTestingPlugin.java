@@ -573,11 +573,12 @@ public class QuickPluginTestingPlugin extends Plugin {
 	@SuppressWarnings("SameParameterValue")
 	private void outputScriptIds(ScriptPreFired scriptPreFired, int gameCycles) {
 		//Useful for finding scriptIds without being spammed by scripts that run every gametick. Should be used in onScriptPreFired
+		//gameCycles should be the amount of game ticks between how often the event fires. Maybe change to client ticks in the future.
 		int id = scriptPreFired.getScriptId();
-		if(scriptMap.containsKey(id)) {
+		if (scriptMap.containsKey(id)) {
 			int cyclesPassed = client.getGameCycle() - scriptMap.get(id);
-			if (cyclesPassed > gameCycles) {
-				System.out.println("Cycles passed: "+cyclesPassed + " scriptId: " + id);
+			if (cyclesPassed >= gameCycles) {
+				System.out.println("Cycles passed: " + cyclesPassed + " scriptId: " + id);
 			}
 		}
 		scriptMap.put(id, client.getGameCycle()); //Put it in there if it's not in the HashMap or update the value
