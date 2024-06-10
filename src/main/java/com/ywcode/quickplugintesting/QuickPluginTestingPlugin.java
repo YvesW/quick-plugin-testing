@@ -541,22 +541,27 @@ public class QuickPluginTestingPlugin extends Plugin {
 
 				ScriptEvent scriptEvent = scriptPreFired.getScriptEvent();
 				Widget scriptSource = scriptEvent.getSource();
-				int scriptSourceId = scriptSource.getId();
-				Object[] scriptArguments = scriptEvent.getArguments();
+				if (scriptSource != null) {
+					int scriptSourceId = scriptSource.getId();
+					System.out.println(scriptId + " source = " + scriptSource);
+					System.out.println(scriptId + " WidgetUtil.componentToInterface(scriptSourceId) = " + WidgetUtil.componentToInterface(scriptSourceId));
+					System.out.println(scriptId + " WidgetUtil.componentToId(scriptSourceId) = " + WidgetUtil.componentToId(scriptSourceId));
+					System.out.println(scriptId + " scriptSource.getIndex() = " + scriptSource.getIndex());
+					var name = getWidgetName(scriptSourceId);
+					if (name != null) {
+						System.out.println("WidgetName = " + name);
+					}
+				} else {
+					System.out.println(scriptId + " scriptSource = null");
+				}
 
-				System.out.println(scriptId + " source = " + scriptEvent.getSource());
-				System.out.println(scriptId + " WidgetUtil.componentToInterface(scriptSourceId) = " + WidgetUtil.componentToInterface(scriptSourceId));
-				System.out.println(scriptId + " WidgetUtil.componentToId(scriptSourceId) = " + WidgetUtil.componentToId(scriptSourceId));
-				System.out.println(scriptId + " scriptSource.getIndex() = " + scriptSource.getIndex());
-				System.out.println("Arg length = " + scriptArguments.length);
+				Object[] scriptArguments = scriptEvent.getArguments();
+				System.out.println(scriptId + " Arg length = " + scriptArguments.length);
 				for (Object scriptArgument : scriptArguments) {
 					System.out.println(scriptArgument);
 				}
 				System.out.println("Done printing script arguments.");
-				var name = getWidgetName(scriptSourceId);
-				if (name != null) {
-					System.out.println("WidgetName = "+ name);
-				}
+
 				if (printExtraStuff) {
 					System.out.println(scriptId + " scriptEvent.getOp() = " + scriptEvent.getOp());
 					System.out.println(scriptId + " scriptEvent.getOpbase() = " + scriptEvent.getOpbase());
