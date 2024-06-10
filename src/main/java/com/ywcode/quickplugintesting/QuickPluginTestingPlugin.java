@@ -106,9 +106,9 @@ public class QuickPluginTestingPlugin extends Plugin {
 		//}
 	}
 
-	@Subscribe
-	public void onChatInput(ChatInput chatInput) {
-	}
+	//@Subscribe
+	//public void onChatInput(ChatInput chatInput) {
+	//}
 
 	@Subscribe
 	public void onClientShutdown(ClientShutdown clientShutdown) {
