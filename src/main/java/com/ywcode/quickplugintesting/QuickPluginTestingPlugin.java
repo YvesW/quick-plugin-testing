@@ -132,7 +132,7 @@ public class QuickPluginTestingPlugin extends Plugin {
 
 	@Subscribe
 	public void onCommandExecuted(CommandExecuted commandExecuted) {
-		if (commandExecuted.getCommand().equals("test")) {
+		if (commandExecuted.getCommand().equalsIgnoreCase("test")) {
 			//code here
 			//outputCommandArguments(commandExecuted);
 			//findVarp(15);
@@ -662,7 +662,7 @@ public class QuickPluginTestingPlugin extends Plugin {
 				}
 			}
 			if (!contains) {
-				if (entryValue.equals(desiredValueStandardized)) {
+				if (entryValue.equals(desiredValueStandardized)) { // no equalsIgnoreCase required because Text.standardize does .toLowerCase
 					System.out.println("Varc " + entry.getKey() + " MATCHES value: " + entry.getValue() + System.lineSeparator() + "client.getVarcIntValue = " + client.getVarcIntValue(entry.getKey()) + " client.getVarcStrValue = " + client.getVarcStrValue(entry.getKey()));
 				}
 			}
@@ -679,7 +679,7 @@ public class QuickPluginTestingPlugin extends Plugin {
 		if (contains && stringValue.contains(desiredValue)) {
 			System.out.println("VarcStr " + index + " CONTAINS desired value: " + stringValue);
 		}
-		if (!contains && stringValue.equals(desiredValue)) {
+		if (!contains && stringValue.equals(desiredValue)) { // no equalsIgnoreCase required because Text.standardize does .toLowerCase
 			System.out.println("VarcStr " + index + " MATCHES desired value: " + stringValue);
 		}
 	}
@@ -696,7 +696,7 @@ public class QuickPluginTestingPlugin extends Plugin {
 	}
 
 	private boolean isCommandName(CommandExecuted commandExecuted, String commandNameToMatch) { //meh, doesn't really save any time
-		return commandExecuted.getCommand().equals(commandNameToMatch);
+		return commandExecuted.getCommand().equalsIgnoreCase(commandNameToMatch);
 	}
 
 	private static String getWidgetName(int componentId) {
