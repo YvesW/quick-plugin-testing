@@ -354,7 +354,7 @@ public class QuickPluginTestingPlugin extends Plugin {
 	}
 
 	@Subscribe
-	public void onPostHealthBar(PostHealthBar postHealthBar) {
+	public void onPostHealthBarConfig(PostHealthBarConfig postHealthBarConfig) {
 	}
 
 	@Subscribe
