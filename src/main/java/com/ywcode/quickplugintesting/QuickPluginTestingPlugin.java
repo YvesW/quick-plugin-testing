@@ -412,9 +412,10 @@ public class QuickPluginTestingPlugin extends Plugin {
 	@Subscribe
 	public void onScriptPreFired(ScriptPreFired scriptPreFired) {
 		//getScriptStack(scriptPreFired, 57);
-		//getScriptStack(scriptPreFired, 2153);
 		//getScriptArguments(scriptPreFired, 57, true);
+		//getScriptStack(scriptPreFired, 2153);
 		//getScriptArguments(scriptPreFired, 2153, true);
+		
 		//outputScriptIds(scriptPreFired, 35);
 	}
 
