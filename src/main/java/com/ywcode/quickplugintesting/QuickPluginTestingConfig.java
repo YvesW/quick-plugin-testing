@@ -1,6 +1,9 @@
 package com.ywcode.quickplugintesting;
 
-import net.runelite.client.config.*;
+import net.runelite.client.config.Config;
+import net.runelite.client.config.ConfigGroup;
+import net.runelite.client.config.ConfigItem;
+import net.runelite.client.config.Keybind;
 
 @ConfigGroup("qptesting")
 public interface QuickPluginTestingConfig extends Config
