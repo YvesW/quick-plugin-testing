@@ -138,6 +138,7 @@ public class QuickPluginTestingPlugin extends Plugin {
 
 	private static final Map<Integer, Integer> scriptMap = new HashMap<>();
 	private static final Map<Integer, String> widgetNames = new HashMap<>();
+	private static final String CONFIG_GROUP = "qptesting";
 
 	@Inject
 	private Client client;
@@ -244,7 +245,7 @@ public class QuickPluginTestingPlugin extends Plugin {
 
 	@Subscribe
 	public void onConfigChanged(ConfigChanged configChanged) {
-		if (configChanged.getGroup().equals("qptesting")) {
+		if (configChanged.getGroup().equals(CONFIG_GROUP)) {
 
 		}
 	}
