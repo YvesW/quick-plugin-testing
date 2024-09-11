@@ -231,6 +231,7 @@ public class QuickPluginTestingPlugin extends Plugin {
 	public void onClientTick(ClientTick clientTick) {
 	}
 
+	@SuppressWarnings("StatementWithEmptyBody")
 	@Subscribe
 	public void onCommandExecuted(CommandExecuted commandExecuted) {
 		if (commandExecuted.getCommand().equalsIgnoreCase("test")) {
@@ -243,9 +244,10 @@ public class QuickPluginTestingPlugin extends Plugin {
 		}
 	}
 
+	@SuppressWarnings("StatementWithEmptyBody")
 	@Subscribe
 	public void onConfigChanged(ConfigChanged configChanged) {
-		if (configChanged.getGroup().equals(CONFIG_GROUP)) {
+		if (configChanged.getGroup().equals(CONFIG_GROUP)) { //not using early return in case you want to listen for other config groups
 
 		}
 	}
@@ -613,7 +615,7 @@ public class QuickPluginTestingPlugin extends Plugin {
 	public void onWorldListLoad(WorldListLoad worldListLoad) {
 	}
 
-	@SuppressWarnings("SameParameterValue")
+	@SuppressWarnings({"SameParameterValue", "unused"})
 	private void getScriptStack(ScriptPreFired scriptPreFired, int scriptIdToMatch) {
 		//Gets the script stack and its content when it fires. Should be used in onScriptPreFired
 		final int scriptId = scriptPreFired.getScriptId();
@@ -636,7 +638,7 @@ public class QuickPluginTestingPlugin extends Plugin {
 		}
 	}
 
-	@SuppressWarnings("SameParameterValue")
+	@SuppressWarnings({"SameParameterValue", "unused"})
 	private void getScriptArguments(ScriptPreFired scriptPreFired, int scriptIdToMatch, boolean printExtraStuff) {
 		//Gets i.a. the script arguments. Should be used in onScriptPreFired. boolean printExtraStuff in case you also want to print Op stuff and typedKeyChar/Code
 		//If you want to get the scripts that are fired because of this script, check RuneLite's script inspector!
@@ -683,7 +685,7 @@ public class QuickPluginTestingPlugin extends Plugin {
 		}
 	}
 
-	@SuppressWarnings("SameParameterValue")
+	@SuppressWarnings({"SameParameterValue", "unused"})
 	private void outputScriptIds(ScriptPreFired scriptPreFired, int gameCycles) {
 		//Useful for finding scriptIds without being spammed by scripts that run every client tick. Should be used in onScriptPreFired
 		//gameCycles should be the amount of client ticks between how often the event fires.
@@ -698,7 +700,7 @@ public class QuickPluginTestingPlugin extends Plugin {
 		scriptMap.put(id, currentGameCycle); //Put it in there if it's not in the HashMap or update the value
 	}
 
-	@SuppressWarnings("SameParameterValue")
+	@SuppressWarnings({"SameParameterValue", "unused"})
 	private void ifVarChanged(VarbitChanged varbitChanged, int varIdToMatch, boolean varbit) {
 		//If the Varbit (true) or Varp (false) with this Id changes, it gets outputted. Useful to use in onVarbitChanged
 		if (varbit && varbitChanged.getVarbitId() == varIdToMatch) {
@@ -709,7 +711,7 @@ public class QuickPluginTestingPlugin extends Plugin {
 		}
 	}
 
-	@SuppressWarnings("SameParameterValue")
+	@SuppressWarnings({"SameParameterValue", "unused"})
 	private void ifVarClientIntChanged(VarClientIntChanged varClientIntChanged, int varclientIndexToMatch) {
 		//If the VarClientInt with this Index/Id changes, it gets outputted. Useful to use in onVarclientIntChanged
 		final int varcIndex = varClientIntChanged.getIndex();
@@ -721,7 +723,7 @@ public class QuickPluginTestingPlugin extends Plugin {
         System.out.println(client.getTickCount() + " VarClientInt " + varcIndex + " changed to " + client.getVarcIntValue(varcIndex));
     }
 
-	@SuppressWarnings("SameParameterValue")
+	@SuppressWarnings({"SameParameterValue", "unused"})
 	private void ifVarClientStrChanged(VarClientStrChanged varClientStrChanged, int varclientIndexToMatch) {
 		//If the VarClientStr with this Index/Id changes, it gets outputted. Useful to use in onVarclientStrChanged
 		final int varcStrIndex = varClientStrChanged.getIndex();
@@ -732,7 +734,7 @@ public class QuickPluginTestingPlugin extends Plugin {
         System.out.println(client.getTickCount() + " VarClientStr " + varcStrIndex + " changed to " + client.getVarcStrValue(varcStrIndex));
     }
 
-	@SuppressWarnings("SameParameterValue")
+	@SuppressWarnings({"SameParameterValue", "unused"})
 	private void findVarbit(int desiredValue) {
 		//Iterate through Varbits to find matching varbits based on value. Outputs the VarbitId and VarbitValue
 		try {
@@ -750,7 +752,7 @@ public class QuickPluginTestingPlugin extends Plugin {
 		System.out.println("findVarbit completed looking for " + desiredValue);
 	}
 
-	@SuppressWarnings("SameParameterValue")
+	@SuppressWarnings({"SameParameterValue", "unused"})
 	private void findVarp(int desiredValue) {
 		//Iterate through Varps to find matching Varps based on value. Outputs the VarpId and VarpValue
 		final int[] varps = client.getVarps();
@@ -762,7 +764,7 @@ public class QuickPluginTestingPlugin extends Plugin {
 		System.out.println("findVarp completed looking for " + desiredValue);
 	}
 
-	@SuppressWarnings("SameParameterValue")
+	@SuppressWarnings({"SameParameterValue", "unused"})
 	private void findVarc(String desiredValue, boolean contains) {
 		//Iterate through Varc map looking for a Varc value. Displays both the VarcId (key) and the value.
 		//Set contains to true to check if the Varc contains the value, not equals.
@@ -785,7 +787,7 @@ public class QuickPluginTestingPlugin extends Plugin {
 		System.out.println("findVarc completed looking for " + desiredValue);
 	}
 
-	@SuppressWarnings("SameParameterValue")
+	@SuppressWarnings({"SameParameterValue", "unused"})
 	private void onVarcValueChangedTo(VarClientStrChanged varClientStrChanged, String desiredValue, boolean contains) {
 		//Use this in onVarClientStrChanged to only output VarCStrs with this specific value
 		final int index = varClientStrChanged.getIndex();
@@ -799,7 +801,7 @@ public class QuickPluginTestingPlugin extends Plugin {
 		}
 	}
 
-	@SuppressWarnings("SameParameterValue")
+	@SuppressWarnings({"SameParameterValue", "unused"})
 	private void outputCommandArguments(CommandExecuted commandExecuted) {
 		//Iterates over all the command arguments (e.g. ::test 5 6 7) and printlns them
 		//I've completely forgotten the use case for this though. Maybe an example of how to use the arguments?
@@ -810,6 +812,7 @@ public class QuickPluginTestingPlugin extends Plugin {
 		}
 	}
 
+	@SuppressWarnings({"SameParameterValue", "unused"})
 	private boolean isCommandName(CommandExecuted commandExecuted, String commandNameToMatch) { //meh, doesn't really save any time
 		return commandExecuted.getCommand().equalsIgnoreCase(commandNameToMatch);
 	}
