@@ -615,21 +615,24 @@ public class QuickPluginTestingPlugin extends Plugin {
 
 	@SuppressWarnings("SameParameterValue")
 	private void getScriptStack(ScriptPreFired scriptPreFired, int scriptIdToMatch) {
-		//Gets the scriptstack and its content when it fires. Should be used in onScriptPreFired
-		int scriptId = scriptPreFired.getScriptId();
-		if (scriptId == scriptIdToMatch) {
-			int intStackSize = client.getIntStackSize();
-			int[] intStack = client.getIntStack();
-			System.out.println(scriptId+" intStackSize = "+intStackSize);
-			for (int i = 0; i < intStackSize; i++) {
-				System.out.println(scriptId+" intStack["+i+"] = "+intStack[i]);
-			}
-			int stringStackSize = client.getStringStackSize();
-			String[] stringStack = client.getStringStack();
-			System.out.println(scriptId+" stringStackSize = "+stringStackSize);
-			for (int i = 0; i < stringStackSize; i++) {
-				System.out.println(scriptId+" stringStack["+i+"] = "+stringStack[i]);
-			}
+		//Gets the script stack and its content when it fires. Should be used in onScriptPreFired
+		final int scriptId = scriptPreFired.getScriptId();
+		if (scriptId != scriptIdToMatch) {
+			//We don't want to look at this script, return
+			return;
+		}
+
+		final int intStackSize = client.getIntStackSize();
+		final int[] intStack = client.getIntStack();
+		System.out.println(scriptId + " intStackSize = " + intStackSize + " at tick " + client.getTickCount());
+		for (int i = 0; i < intStackSize; i++) {
+			System.out.println(scriptId + " intStack[" + i + "] = " + intStack[i]);
+		}
+		final int stringStackSize = client.getStringStackSize();
+		final String[] stringStack = client.getStringStack();
+		System.out.println(scriptId + " stringStackSize = " + stringStackSize);
+		for (int i = 0; i < stringStackSize; i++) {
+			System.out.println(scriptId + " stringStack[" + i + "] = " + stringStack[i]);
 		}
 	}
 
@@ -637,58 +640,62 @@ public class QuickPluginTestingPlugin extends Plugin {
 	private void getScriptArguments(ScriptPreFired scriptPreFired, int scriptIdToMatch, boolean printExtraStuff) {
 		//Gets i.a. the script arguments. Should be used in onScriptPreFired. boolean printExtraStuff in case you also want to print Op stuff and typedKeyChar/Code
 		//If you want to get the scripts that are fired because of this script, check RuneLite's script inspector!
-		int scriptId = scriptPreFired.getScriptId();
-		if (scriptId == scriptIdToMatch) {
-			if (scriptPreFired.getScriptEvent() != null) {
+		final int scriptId = scriptPreFired.getScriptId();
+		if (scriptId != scriptIdToMatch) {
+			//Not the script we want to look at
+			return;
+		}
 
-				ScriptEvent scriptEvent = scriptPreFired.getScriptEvent();
-				Widget scriptSource = scriptEvent.getSource();
-				if (scriptSource != null) {
-					int scriptSourceId = scriptSource.getId();
-					System.out.println(scriptId + " source = " + scriptSource);
-					System.out.println(scriptId + " WidgetUtil.componentToInterface(scriptSourceId) = " + WidgetUtil.componentToInterface(scriptSourceId));
-					System.out.println(scriptId + " WidgetUtil.componentToId(scriptSourceId) = " + WidgetUtil.componentToId(scriptSourceId));
-					System.out.println(scriptId + " scriptSource.getIndex() = " + scriptSource.getIndex());
-					var name = getWidgetName(scriptSourceId);
-					if (name != null) {
-						System.out.println("WidgetName = " + name);
-					}
-				} else {
-					System.out.println(scriptId + " scriptSource = null");
+		final ScriptEvent scriptEvent = scriptPreFired.getScriptEvent();
+		final int currentTickCount = client.getTickCount();
+		if (scriptEvent != null) {
+			final Widget scriptSource = scriptEvent.getSource();
+			if (scriptSource != null) {
+				final int scriptSourceId = scriptSource.getId();
+				System.out.println(scriptId + " source = " + scriptSource + " at tick " + currentTickCount);
+				System.out.println(scriptId + " WidgetUtil.componentToInterface(scriptSourceId) = " + WidgetUtil.componentToInterface(scriptSourceId));
+				System.out.println(scriptId + " WidgetUtil.componentToId(scriptSourceId) = " + WidgetUtil.componentToId(scriptSourceId));
+				System.out.println(scriptId + " scriptSource.getIndex() = " + scriptSource.getIndex());
+				var name = getWidgetName(scriptSourceId);
+				if (name != null) {
+					System.out.println("WidgetName = " + name);
 				}
-
-				Object[] scriptArguments = scriptEvent.getArguments();
-				System.out.println(scriptId + " Arg length = " + scriptArguments.length);
-				for (Object scriptArgument : scriptArguments) {
-					System.out.println(scriptArgument);
-				}
-				System.out.println("Done printing script arguments.");
-
-				if (printExtraStuff) {
-					System.out.println(scriptId + " scriptEvent.getOp() = " + scriptEvent.getOp());
-					System.out.println(scriptId + " scriptEvent.getOpbase() = " + scriptEvent.getOpbase());
-					System.out.println(scriptId + " scriptEvent.getTypedKeyChar() = " + scriptEvent.getTypedKeyChar());
-					System.out.println(scriptId + " scriptEvent.getTypedKeyCode() = " + scriptEvent.getTypedKeyCode());
-				}
-
 			} else {
-				System.out.println(scriptId + " scriptEvent = null");
+				System.out.println(scriptId + " scriptSource = null at tick " + currentTickCount);
 			}
+
+			final Object[] scriptArguments = scriptEvent.getArguments();
+			System.out.println(scriptId + " Arg length = " + scriptArguments.length);
+			for (Object scriptArgument : scriptArguments) {
+				System.out.println(scriptArgument);
+			}
+			System.out.println("Done printing script arguments.");
+
+			if (printExtraStuff) {
+				System.out.println(scriptId + " scriptEvent.getOp() = " + scriptEvent.getOp());
+				System.out.println(scriptId + " scriptEvent.getOpbase() = " + scriptEvent.getOpbase());
+				System.out.println(scriptId + " scriptEvent.getTypedKeyChar() = " + scriptEvent.getTypedKeyChar());
+				System.out.println(scriptId + " scriptEvent.getTypedKeyCode() = " + scriptEvent.getTypedKeyCode());
+			}
+
+		} else {
+			System.out.println(scriptId + " scriptEvent = null at tick " + currentTickCount);
 		}
 	}
 
 	@SuppressWarnings("SameParameterValue")
 	private void outputScriptIds(ScriptPreFired scriptPreFired, int gameCycles) {
 		//Useful for finding scriptIds without being spammed by scripts that run every client tick. Should be used in onScriptPreFired
-		//gameCycles should be the amount of game ticks between how often the event fires. Maybe change to client ticks in the future.
-		int id = scriptPreFired.getScriptId();
+		//gameCycles should be the amount of client ticks between how often the event fires.
+		final int id = scriptPreFired.getScriptId();
+		final int currentGameCycle = client.getGameCycle();
 		if (scriptMap.containsKey(id)) {
-			int cyclesPassed = client.getGameCycle() - scriptMap.get(id);
+			final int cyclesPassed = currentGameCycle - scriptMap.get(id);
 			if (cyclesPassed >= gameCycles) {
 				System.out.println("Cycles (client ticks) passed: " + cyclesPassed + " scriptId: " + id);
 			}
 		}
-		scriptMap.put(id, client.getGameCycle()); //Put it in there if it's not in the HashMap or update the value
+		scriptMap.put(id, currentGameCycle); //Put it in there if it's not in the HashMap or update the value
 	}
 
 	@SuppressWarnings("SameParameterValue")
@@ -705,18 +712,25 @@ public class QuickPluginTestingPlugin extends Plugin {
 	@SuppressWarnings("SameParameterValue")
 	private void ifVarClientIntChanged(VarClientIntChanged varClientIntChanged, int varclientIndexToMatch) {
 		//If the VarClientInt with this Index/Id changes, it gets outputted. Useful to use in onVarclientIntChanged
-		if (varClientIntChanged.getIndex() == varclientIndexToMatch) {
-			System.out.println(client.getTickCount() + " VarClientInt " + varClientIntChanged.getIndex() + " changed to " + client.getVarcIntValue(varClientIntChanged.getIndex()));
-		}
-	}
+		final int varcIndex = varClientIntChanged.getIndex();
+        if (varcIndex != varclientIndexToMatch) {
+			//Not the varcInt we want to look at
+            return;
+        }
+
+        System.out.println(client.getTickCount() + " VarClientInt " + varcIndex + " changed to " + client.getVarcIntValue(varcIndex));
+    }
 
 	@SuppressWarnings("SameParameterValue")
 	private void ifVarClientStrChanged(VarClientStrChanged varClientStrChanged, int varclientIndexToMatch) {
 		//If the VarClientStr with this Index/Id changes, it gets outputted. Useful to use in onVarclientStrChanged
-		if (varClientStrChanged.getIndex() == varclientIndexToMatch) {
-			System.out.println(client.getTickCount() + " VarClientStr " + varClientStrChanged.getIndex() + " changed to " + client.getVarcStrValue(varClientStrChanged.getIndex()));
-		}
-	}
+		final int varcStrIndex = varClientStrChanged.getIndex();
+        if (varcStrIndex != varclientIndexToMatch) {
+            return;
+        }
+
+        System.out.println(client.getTickCount() + " VarClientStr " + varcStrIndex + " changed to " + client.getVarcStrValue(varcStrIndex));
+    }
 
 	@SuppressWarnings("SameParameterValue")
 	private void findVarbit(int desiredValue) {
@@ -724,16 +738,14 @@ public class QuickPluginTestingPlugin extends Plugin {
 		try {
 			//This is such a hacky solution find the max varbit size... There must be a better way, but I can't find it right now in the API...
 			for (int i = 0; i < 1000000; i++) {
-				client.getVarbitValue(i);
-			}
-		} catch (IndexOutOfBoundsException indexOutOfBoundsException) {
-			int lastAvailableVarbit = Integer.parseInt(indexOutOfBoundsException.getMessage().replace("Varbit ", "").replace(" does not exist", "")) - 1;
-			System.out.println("Last available varbitId = " + lastAvailableVarbit);
-			for (int i = 0; i <= lastAvailableVarbit; i++) {
 				if (client.getVarbitValue(i) == desiredValue) {
 					System.out.println("Varbit " + i + " matches value: " + client.getVarbitValue(i));
 				}
 			}
+			System.out.println("findVarbit has succesfully completed looping client.getVarbitValue(i) for 0<=i<1000000. This should not happen.");
+		} catch (IndexOutOfBoundsException indexOutOfBoundsException) {
+			final int lastAvailableVarbit = Integer.parseInt(indexOutOfBoundsException.getMessage().replace("Varbit ", "").replace(" does not exist", "")) - 1;
+			System.out.println("Last available varbitId = " + lastAvailableVarbit);
 		}
 		System.out.println("findVarbit completed looking for " + desiredValue);
 	}
@@ -741,7 +753,7 @@ public class QuickPluginTestingPlugin extends Plugin {
 	@SuppressWarnings("SameParameterValue")
 	private void findVarp(int desiredValue) {
 		//Iterate through Varps to find matching Varps based on value. Outputs the VarpId and VarpValue
-		int[] varps = client.getVarps();
+		final int[] varps = client.getVarps();
 		for (int i = 0; i < varps.length; i++) {
 			if (varps[i] == desiredValue) {
 				System.out.println("Varp " + i + " matches value: " + varps[i] + System.lineSeparator() +"client.getVarpValue = " + client.getVarpValue(i));
@@ -754,18 +766,19 @@ public class QuickPluginTestingPlugin extends Plugin {
 	private void findVarc(String desiredValue, boolean contains) {
 		//Iterate through Varc map looking for a Varc value. Displays both the VarcId (key) and the value.
 		//Set contains to true to check if the Varc contains the value, not equals.
-		Map<Integer,Object> varcMap = client.getVarcMap();
+		final Map<Integer,Object> varcMap = client.getVarcMap();
 		for (Map.Entry<Integer, Object> entry : varcMap.entrySet()) {
-			String entryValue = Text.standardize(entry.getValue().toString());
-			String desiredValueStandardized = Text.standardize(desiredValue);
+			final String entryValue = Text.standardize(entry.getValue().toString());
+			final String desiredValueStandardized = Text.standardize(desiredValue);
 			if (contains) {
 				if (entryValue.contains(desiredValueStandardized)) {
-					System.out.println("Varc " + entry.getKey() + " CONTAINS desired value: " + entry.getValue() + System.lineSeparator() + "client.getVarcIntValue = " + client.getVarcIntValue(entry.getKey()) + " client.getVarcStrValue = " + client.getVarcStrValue(entry.getKey()));
+					final int key = entry.getKey();
+					System.out.println("Varc " + key + " CONTAINS desired value: " + key + System.lineSeparator() + "client.getVarcIntValue = " + client.getVarcIntValue(key) + " client.getVarcStrValue = " + client.getVarcStrValue(key));
 				}
-			}
-			if (!contains) {
+			} else { //if (!contains)
 				if (entryValue.equals(desiredValueStandardized)) { // no equalsIgnoreCase required because Text.standardize does .toLowerCase
-					System.out.println("Varc " + entry.getKey() + " MATCHES value: " + entry.getValue() + System.lineSeparator() + "client.getVarcIntValue = " + client.getVarcIntValue(entry.getKey()) + " client.getVarcStrValue = " + client.getVarcStrValue(entry.getKey()));
+					final int key = entry.getKey();
+					System.out.println("Varc " + key + " EQUALS desired value: " + entry.getValue() + System.lineSeparator() + "client.getVarcIntValue = " + client.getVarcIntValue(key) + " client.getVarcStrValue = " + client.getVarcStrValue(key));
 				}
 			}
 		}
@@ -775,8 +788,8 @@ public class QuickPluginTestingPlugin extends Plugin {
 	@SuppressWarnings("SameParameterValue")
 	private void onVarcValueChangedTo(VarClientStrChanged varClientStrChanged, String desiredValue, boolean contains) {
 		//Use this in onVarClientStrChanged to only output VarCStrs with this specific value
-		int index = varClientStrChanged.getIndex();
-		String stringValue = Text.standardize(client.getVarcStrValue(index));
+		final int index = varClientStrChanged.getIndex();
+		final String stringValue = Text.standardize(client.getVarcStrValue(index));
 		desiredValue = Text.standardize(desiredValue);
 		if (contains && stringValue.contains(desiredValue)) {
 			System.out.println("VarcStr " + index + " CONTAINS desired value: " + stringValue);
@@ -790,10 +803,10 @@ public class QuickPluginTestingPlugin extends Plugin {
 	private void outputCommandArguments(CommandExecuted commandExecuted) {
 		//Iterates over all the command arguments (e.g. ::test 5 6 7) and printlns them
 		//I've completely forgotten the use case for this though. Maybe an example of how to use the arguments?
-		String[] Arguments = commandExecuted.getArguments();
-		int VarArgsSize = Arguments.length;
+		final String[] Arguments = commandExecuted.getArguments();
+		final int VarArgsSize = Arguments.length;
 		for (int i = 0; i < VarArgsSize; i++) { //Can be replaced with enhanced for.
-			System.out.println(Arguments[i]);
+			System.out.println("Argument " + Arguments[i] + " at position " + i);
 		}
 	}
 
