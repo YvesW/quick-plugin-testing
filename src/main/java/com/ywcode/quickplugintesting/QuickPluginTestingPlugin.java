@@ -910,7 +910,7 @@ public class QuickPluginTestingPlugin extends Plugin {
 		}
 
 		if (!name.isEmpty()) {
-			name = " (" + className + "." + name + ") ";
+			name = " (" + className + "." + name + ")";
 		}
 		return name;
 	}
