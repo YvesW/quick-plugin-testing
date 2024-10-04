@@ -1,10 +1,15 @@
 package com.ywcode.quickplugintesting;
 
 
+import com.google.common.base.MoreObjects;
 import com.google.inject.Provides;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
 import net.runelite.api.ScriptEvent;
+import net.runelite.api.VarClientInt;
+import net.runelite.api.VarClientStr;
+import net.runelite.api.VarPlayer;
+import net.runelite.api.Varbits;
 import net.runelite.api.events.AccountHashChanged;
 import net.runelite.api.events.ActorDeath;
 import net.runelite.api.events.AnimationChanged;
@@ -122,6 +127,7 @@ import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.ui.overlay.infobox.InfoBoxManager;
 import net.runelite.client.util.Text;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -138,6 +144,10 @@ public class QuickPluginTestingPlugin extends Plugin {
 
 	private static final Map<Integer, Integer> scriptMap = new HashMap<>();
 	private static final Map<Integer, String> widgetNames = new HashMap<>();
+	private static final Map<Integer, String> varbitNames = new HashMap<>();
+	private static final Map<Integer, String> varPlayerNames = new HashMap<>();
+	private static final Map<Integer, String> varClientIntNames = new HashMap<>();
+	private static final Map<Integer, String> varClientStrNames = new HashMap<>();
 	private static final String CONFIG_GROUP = "qptesting";
 
 	@Inject
@@ -568,8 +578,8 @@ public class QuickPluginTestingPlugin extends Plugin {
 
 	@Subscribe
 	public void onVarbitChanged(VarbitChanged varbitChanged) {
-		//ifVarChanged(varbitChanged, 928, true);
-		//ifVarChanged(varbitChanged, 929, true);
+		//ifVarChanged(varbitChanged, 928, Vars.VARBIT);
+		//ifVarChanged(varbitChanged, 929, Vars.VARBIT);
 	}
 
 	@Subscribe
@@ -658,7 +668,7 @@ public class QuickPluginTestingPlugin extends Plugin {
 				System.out.println(scriptId + " WidgetUtil.componentToInterface(scriptSourceId) = " + WidgetUtil.componentToInterface(scriptSourceId));
 				System.out.println(scriptId + " WidgetUtil.componentToId(scriptSourceId) = " + WidgetUtil.componentToId(scriptSourceId));
 				System.out.println(scriptId + " scriptSource.getIndex() = " + scriptSource.getIndex());
-				var name = getWidgetName(scriptSourceId);
+				final var name = getVarName(scriptSourceId, Vars.WIDGET);
 				if (name != null) {
 					System.out.println("WidgetName = " + name);
 				}
@@ -701,13 +711,19 @@ public class QuickPluginTestingPlugin extends Plugin {
 	}
 
 	@SuppressWarnings({"SameParameterValue", "unused"})
-	private void ifVarChanged(VarbitChanged varbitChanged, int varIdToMatch, boolean varbit) {
-		//If the Varbit (true) or Varp (false) with this Id changes, it gets outputted. Useful to use in onVarbitChanged
-		if (varbit && varbitChanged.getVarbitId() == varIdToMatch) {
-			System.out.println(client.getTickCount() + " Varbit " + varbitChanged.getVarbitId() + " changed to " + varbitChanged.getValue());
+	private void ifVarChanged(VarbitChanged varbitChanged, int varIdToMatch, Vars var) {
+		//If the Varbit (Vars.VARBIT) or Varp (Vars.VARPLAYER) with this Id changes, it gets outputted. Useful to use in onVarbitChanged
+		if (var != Vars.VARBIT && var != Vars.VARPLAYER) {
+			System.out.println("ifVarChanged: not of Vars.VARBIT or Vars.VARPLAYER type!");
+			return;
 		}
-		if (!varbit && varbitChanged.getVarpId() == varIdToMatch) {
-			System.out.println(client.getTickCount() + " Varp " + varbitChanged.getVarpId() + " changed to " + varbitChanged.getValue());
+
+		if (var == Vars.VARBIT && varbitChanged.getVarbitId() == varIdToMatch) {
+			final int varbitId = varbitChanged.getVarbitId();
+			System.out.println(client.getTickCount() + " Varbit " + varbitId + getInlineVarName(varbitId, Vars.VARBIT) + " changed to " + varbitChanged.getValue());
+		} else if (var == Vars.VARPLAYER && varbitChanged.getVarpId() == varIdToMatch) {
+			final int varpId = varbitChanged.getVarpId();
+			System.out.println(client.getTickCount() + " Varp " + varpId + getInlineVarName(varpId, Vars.VARPLAYER) + " changed to " + varbitChanged.getValue());
 		}
 	}
 
@@ -720,7 +736,7 @@ public class QuickPluginTestingPlugin extends Plugin {
             return;
         }
 
-        System.out.println(client.getTickCount() + " VarClientInt " + varcIndex + " changed to " + client.getVarcIntValue(varcIndex));
+        System.out.println(client.getTickCount() + " VarClientInt " + varcIndex + getInlineVarName(varcIndex, Vars.VARCLIENTINT) + " changed to " + client.getVarcIntValue(varcIndex));
     }
 
 	@SuppressWarnings({"SameParameterValue", "unused"})
@@ -731,7 +747,7 @@ public class QuickPluginTestingPlugin extends Plugin {
             return;
         }
 
-        System.out.println(client.getTickCount() + " VarClientStr " + varcStrIndex + " changed to " + client.getVarcStrValue(varcStrIndex));
+        System.out.println(client.getTickCount() + " VarClientStr " + varcStrIndex + getInlineVarName(varcStrIndex, Vars.VARCLIENTSTR) + " changed to " + client.getVarcStrValue(varcStrIndex));
     }
 
 	@SuppressWarnings({"SameParameterValue", "unused"})
@@ -739,12 +755,12 @@ public class QuickPluginTestingPlugin extends Plugin {
 		//Iterate through Varbits to find matching varbits based on value. Outputs the VarbitId and VarbitValue
 		try {
 			//This is such a hacky solution find the max varbit size... There must be a better way, but I can't find it right now in the API...
-			for (int i = 0; i < 1000000; i++) {
-				if (client.getVarbitValue(i) == desiredValue) {
-					System.out.println("Varbit " + i + " matches value: " + client.getVarbitValue(i));
+			for (int id = 0; id < 1000000; id++) {
+				if (client.getVarbitValue(id) == desiredValue) {
+					System.out.println("Varbit " + id + getInlineVarName(id, Vars.VARBIT) + " matches value: " + client.getVarbitValue(id));
 				}
 			}
-			System.out.println("findVarbit has succesfully completed looping client.getVarbitValue(i) for 0<=i<1000000. This should not happen.");
+			System.out.println("findVarbit has succesfully completed looping client.getVarbitValue(id) for 0<=i<1000000. This should not happen.");
 		} catch (IndexOutOfBoundsException indexOutOfBoundsException) {
 			final int lastAvailableVarbit = Integer.parseInt(indexOutOfBoundsException.getMessage().replace("Varbit ", "").replace(" does not exist", "")) - 1;
 			System.out.println("Last available varbitId = " + lastAvailableVarbit);
@@ -756,9 +772,9 @@ public class QuickPluginTestingPlugin extends Plugin {
 	private void findVarp(int desiredValue) {
 		//Iterate through Varps to find matching Varps based on value. Outputs the VarpId and VarpValue
 		final int[] varps = client.getVarps();
-		for (int i = 0; i < varps.length; i++) {
-			if (varps[i] == desiredValue) {
-				System.out.println("Varp " + i + " matches value: " + varps[i] + System.lineSeparator() +"client.getVarpValue = " + client.getVarpValue(i));
+		for (int index = 0; index < varps.length; index++) {
+			if (varps[index] == desiredValue) {
+				System.out.println("Varp " + index + getInlineVarName(index, Vars.VARPLAYER) + " matches value: " + varps[index] + System.lineSeparator() +"client.getVarpValue = " + client.getVarpValue(index));
 			}
 		}
 		System.out.println("findVarp completed looking for " + desiredValue);
@@ -775,12 +791,12 @@ public class QuickPluginTestingPlugin extends Plugin {
 			if (contains) {
 				if (entryValue.contains(desiredValueStandardized)) {
 					final int key = entry.getKey();
-					System.out.println("Varc " + key + " CONTAINS desired value: " + key + System.lineSeparator() + "client.getVarcIntValue = " + client.getVarcIntValue(key) + " client.getVarcStrValue = " + client.getVarcStrValue(key));
+					System.out.println("Varc " + key + getInlineVarName(key, Vars.VARCLIENTSTR) + getInlineVarName(key, Vars.VARCLIENTINT) + " CONTAINS desired value: " + key + System.lineSeparator() + "client.getVarcIntValue = " + client.getVarcIntValue(key) + " client.getVarcStrValue = " + client.getVarcStrValue(key));
 				}
 			} else { //if (!contains)
 				if (entryValue.equals(desiredValueStandardized)) { // no equalsIgnoreCase required because Text.standardize does .toLowerCase
 					final int key = entry.getKey();
-					System.out.println("Varc " + key + " EQUALS desired value: " + entry.getValue() + System.lineSeparator() + "client.getVarcIntValue = " + client.getVarcIntValue(key) + " client.getVarcStrValue = " + client.getVarcStrValue(key));
+					System.out.println("Varc " + key + getInlineVarName(key, Vars.VARCLIENTSTR) + getInlineVarName(key, Vars.VARCLIENTINT) + " EQUALS desired value: " + entry.getValue() + System.lineSeparator() + "client.getVarcIntValue = " + client.getVarcIntValue(key) + " client.getVarcStrValue = " + client.getVarcStrValue(key));
 				}
 			}
 		}
@@ -788,16 +804,16 @@ public class QuickPluginTestingPlugin extends Plugin {
 	}
 
 	@SuppressWarnings({"SameParameterValue", "unused"})
-	private void onVarcValueChangedTo(VarClientStrChanged varClientStrChanged, String desiredValue, boolean contains) {
+	private void onVarcStrValueChangedTo(VarClientStrChanged varClientStrChanged, String desiredValue, boolean contains) {
 		//Use this in onVarClientStrChanged to only output VarCStrs with this specific value
 		final int index = varClientStrChanged.getIndex();
 		final String stringValue = Text.standardize(client.getVarcStrValue(index));
 		desiredValue = Text.standardize(desiredValue);
 		if (contains && stringValue.contains(desiredValue)) {
-			System.out.println("VarcStr " + index + " CONTAINS desired value: " + stringValue);
+			System.out.println("VarcStr " + index + getInlineVarName(index, Vars.VARCLIENTSTR) + " CONTAINS desired value: " + stringValue);
 		}
 		if (!contains && stringValue.equals(desiredValue)) { // no equalsIgnoreCase required because Text.standardize does .toLowerCase
-			System.out.println("VarcStr " + index + " MATCHES desired value: " + stringValue);
+			System.out.println("VarcStr " + index + getInlineVarName(index, Vars.VARCLIENTSTR) + " MATCHES desired value: " + stringValue);
 		}
 	}
 
@@ -817,20 +833,84 @@ public class QuickPluginTestingPlugin extends Plugin {
 		return commandExecuted.getCommand().equalsIgnoreCase(commandNameToMatch);
 	}
 
-	private static String getWidgetName(int componentId) {
-		//Yoinked from the widgetinspector, gets used in the scriptinspector
-		if (widgetNames.isEmpty()) {
-			//Initialize map here, so it doesn't create the index
-			//until it's actually needed.
+	@Nullable
+	private String getVarName(int id, Vars var) {
+		//Partially based on Widget Inspector code
+		Map<Integer, String> varMap = null;
+		Class<?> clazz = null;
+
+		switch (var) {
+			case VARBIT:
+				varMap = varbitNames;
+				clazz = Varbits.class;
+				break;
+			case VARPLAYER:
+				varMap = varPlayerNames;
+				clazz = VarPlayer.class;
+				break;
+			case VARCLIENTINT:
+				varMap = varClientIntNames;
+				clazz = VarClientInt.class;
+				break;
+			case VARCLIENTSTR:
+				varMap = varClientStrNames;
+				clazz = VarClientStr.class;
+				break;
+			case WIDGET:
+				varMap = widgetNames;
+				clazz = ComponentID.class;
+				break;
+		}
+
+		if (varMap.isEmpty()) {
+			//Initialize map here, so it doesn't create the index until it's actually needed.
 			try {
-				for (Field f : ComponentID.class.getDeclaredFields()) {
-					widgetNames.put(f.getInt(null), f.getName());
+				for (Field field : clazz.getDeclaredFields()) {
+					if (field.getType() == int.class) {
+						varMap.put(field.getInt(null), field.getName());
+					}
 				}
 			} catch (IllegalAccessException ex) {
-				System.out.println("error setting up widget names: " + ex);
+				System.out.println("error setting up var names: " + ex);
 			}
 		}
-		return widgetNames.get(componentId);
+		return varMap.get(id);
+	}
+
+	private String getInlineVarName(int id, Vars var) {
+		String name = MoreObjects.firstNonNull(getVarName(id, var), "");
+		String className = null;
+
+		switch (var) {
+			case VARBIT:
+				className = Varbits.class.getSimpleName();
+				break;
+			case VARPLAYER:
+				className = VarPlayer.class.getSimpleName();
+				break;
+			case VARCLIENTINT:
+				className = VarClientInt.class.getSimpleName();
+				break;
+			case VARCLIENTSTR:
+				className = VarClientStr.class.getSimpleName();
+				break;
+			case WIDGET:
+				className = ComponentID.class.getSimpleName();
+				break;
+		}
+
+		if (!name.isEmpty()) {
+			name = " (" + className + "." + name + ") ";
+		}
+		return name;
+	}
+
+	enum Vars {
+		VARBIT,
+		VARPLAYER,
+		VARCLIENTINT,
+		VARCLIENTSTR,
+		WIDGET
 	}
 
 	@Provides
