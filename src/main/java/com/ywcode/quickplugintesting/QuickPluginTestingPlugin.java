@@ -578,8 +578,8 @@ public class QuickPluginTestingPlugin extends Plugin {
 
 	@Subscribe
 	public void onVarbitChanged(VarbitChanged varbitChanged) {
-		//ifVarChanged(varbitChanged, 928, Vars.VARBIT);
-		//ifVarChanged(varbitChanged, 929, Vars.VARBIT);
+		//ifVarbitChanged(varbitChanged, 928);
+		//ifVarbitChanged(varbitChanged, 929);
 	}
 
 	@Subscribe
@@ -708,6 +708,16 @@ public class QuickPluginTestingPlugin extends Plugin {
 			}
 		}
 		scriptMap.put(id, currentGameCycle); //Put it in there if it's not in the HashMap or update the value
+	}
+
+	@SuppressWarnings({"SameParameterValue", "unused"})
+	private void ifVarbitChanged(VarbitChanged varbitChanged, int varbitIdToMatch) {
+		ifVarChanged(varbitChanged, varbitIdToMatch, Vars.VARBIT);
+	}
+
+	@SuppressWarnings({"SameParameterValue", "unused"})
+	private void ifVarPlayerChanged(VarbitChanged varbitChanged, int varPlayerIdToMatch) {
+		ifVarChanged(varbitChanged, varPlayerIdToMatch, Vars.VARPLAYER);
 	}
 
 	@SuppressWarnings({"SameParameterValue", "unused"})
